@@ -9,12 +9,13 @@ const PostList = () => {
 
   return (
     <>
-      {fetching === true && <LoadingSpinner />}
-      {!fetching === true && postList.length === 0 && <WelcomeMessage />}
-      {!fetching === true &&
-        postList.map((post) => {
-          return <Post key={post.id} post={post} />;
-        })}
+      {fetching && <LoadingSpinner />}
+
+      {!fetching && postList.length === 0 && <WelcomeMessage />}
+
+      {!fetching &&
+        postList.length > 0 &&
+        postList.map((post) => <Post key={post.id} post={post} />)}
     </>
   );
 };
