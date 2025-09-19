@@ -2,7 +2,6 @@ import { createContext, useEffect, useReducer, useState } from "react";
 
 export const PostList = createContext({
   postList: [],
-  fetching: false,
   addPost: () => {},
   deletePost: () => {},
 });
@@ -51,7 +50,6 @@ const postListReducer = (currPostList, action) => {
 
 const PostListProvider = ({ children }) => {
   const [postList, dispatchPostList] = useReducer(postListReducer, []);
-  const [fetching, setFetching] = useState(false);
 
   const addPost = (post) => {
     dispatchPostList({
@@ -79,31 +77,12 @@ const PostListProvider = ({ children }) => {
     });
   };
 
-  useEffect(() => {
-    setFetching(true);
-
-    const controller = new AbortController();
-    const signal = controller.signal;
-
-    fetch("https://dummyjson.com/posts", { signal })
-      .then((res) => res.json())
-      .then((data) => {
-        addInitialPosts(data.posts);
-        setFetching(false);
-      });
-    return () => {
-      console.log("cleaning up effect");
-      controller.abort();
-    };
-  }, []);
-
   return (
     <PostList.Provider
       value={{
         postList: postList,
         addPost: addPost,
         deletePost: deletePost,
-        fetching,
       }}
     >
       {children}
